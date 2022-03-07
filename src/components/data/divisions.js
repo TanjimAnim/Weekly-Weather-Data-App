@@ -1,4 +1,4 @@
-export default [
+const divisions = [
   {
     id: "1",
     name: "Barishal",
@@ -56,3 +56,4 @@ export default [
     long: "90.420273",
   },
 ];
+export default divisions;

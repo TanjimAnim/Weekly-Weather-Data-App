@@ -8,7 +8,7 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import divisions from "./data/divisions";
 import { fetchDailyWeather } from "./fetchDailyWeather";
 import ToggleMode from "./togglemode";
@@ -84,6 +84,7 @@ export default function Weather() {
         }
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //   componentDidUpdate(prevProps, prevState) {
@@ -93,6 +94,7 @@ export default function Weather() {
   //   }
   useEffect(() => {
     fetchWeatherData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [divisionId]);
 
   return (

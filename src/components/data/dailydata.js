@@ -1,4 +1,4 @@
-export default [
+const dummyDailyData = [
   {
     dt: 1609131600,
     sunrise: 1609115974,
@@ -280,3 +280,5 @@ export default [
     uvi: 6,
   },
 ];
+
+export default dummyDailyData;
