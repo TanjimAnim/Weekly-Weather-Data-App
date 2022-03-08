@@ -7,6 +7,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  Spinner,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import divisions from "./data/divisions";
@@ -36,24 +37,17 @@ export default function Weather() {
   const [lat, setLat] = useState(division.lat);
   const [long, setLong] = useState(division.long);
   const [dailyWeatherData, setDailyWeatherData] = useState([]);
-
-  //   const onDivisionChange = (event) => {
-  //     const divisionId = event.target.value;
-  //     const { name, lat, long } = getDivision(divisionId);
-
-  //     setDivisionId(event.target.value);
-  //     setName(name);
-  //     setLat(lat);
-  //     setLong(long);
-  //   };
+  const [isLoading, setIsloading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchWeatherData = () => {
     fetchDailyWeather(lat, long)
       .then((dailyData) => {
         setDailyWeatherData(dailyData);
+        setIsloading(false);
       })
       .catch((error) => {
-        console.log(error);
+        setError(error);
       });
   };
 
@@ -61,15 +55,16 @@ export default function Weather() {
     fetchCity(lat, long)
       .then((city) => {
         setName(`${city.state}, ${city.country}`);
+        setIsloading(false);
       })
       .catch((error) => {
-        console.log(error);
+        setError(error);
       });
   };
   useEffect(() => {
     if (!navigator.geolocation) {
+      alert("your browswer doesn't support geolocation");
       fetchWeatherData();
-      console.log("your browswer doesn't support geolocation");
     } else {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -77,23 +72,20 @@ export default function Weather() {
           setLong(position.coords.longitude);
           fetchWeatherData();
           fetchCityData();
+          setIsloading(false);
         },
         (error) => {
           fetchWeatherData();
-          console.error("Error Code = " + error.code + " - " + error.message);
+          alert("Error Code = " + error.code + " - " + error.message);
         }
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  //   componentDidUpdate(prevProps, prevState) {
-  //     if (this.state.divisionId !== prevState.divisionId) {
-  //       this.fetchWeatherData();
-  //     }
-  //   }
   useEffect(() => {
     fetchWeatherData();
+    setIsloading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [divisionId]);
 
@@ -132,11 +124,28 @@ export default function Weather() {
             </FormControl>
           </Box>
         </Flex>
-        <VStack spacing={4}>
-          {dailyWeatherData.map((item) => (
-            <WeatherCard key={item.dt} item={item} title={name} />
-          ))}
-        </VStack>
+        {error ? (
+          <Box mt={5} display='flex' flexDir='column' alignItems='center'>
+            <Text size='md'>{error}</Text>
+          </Box>
+        ) : isLoading ? (
+          <Box mt={5} display='flex' flexDir='column' alignItems='center'>
+            <Text size='xl'>Loading</Text>
+            <Spinner
+              thickness='4px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.500'
+              size='xl'
+            />
+          </Box>
+        ) : (
+          <VStack spacing={4}>
+            {dailyWeatherData.map((item) => (
+              <WeatherCard key={item.dt} item={item} title={name} />
+            ))}
+          </VStack>
+        )}
       </Stack>
     </Box>
   );
