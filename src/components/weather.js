@@ -8,6 +8,7 @@ import {
   FormControl,
   FormLabel,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import divisions from "./data/divisions";
